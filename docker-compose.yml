@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: TaskManager.API/Dockerfile
     ports:
-      - "5266:80"
+      - "5266:8080"
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=taskmanager;Username=postgres;Password=postgres123
       - RabbitMQ__Host=rabbitmq
