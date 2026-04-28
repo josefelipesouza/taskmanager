@@ -37,7 +37,20 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddSingleton<IMessageService>(sp =>
     new RabbitMqService(builder.Configuration["RabbitMQ:Host"] ?? "localhost"));
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});    
+
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 // Aplicar migrations automaticamente
 using (var scope = app.Services.CreateScope())
