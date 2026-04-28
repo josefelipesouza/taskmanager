@@ -28,4 +28,8 @@ export const taskService = {
   cancel: async (id: string): Promise<void> => {
     await api.patch(`/tasks/${id}/cancel`);
   },
+
+  start: async (id: string): Promise<void> => { 
+    await api.patch(`/tasks/${id}/start`);
+  },
 };

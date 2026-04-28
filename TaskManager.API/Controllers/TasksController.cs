@@ -38,6 +38,14 @@ public class TasksController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
+    [HttpPatch("{id}/start")]
+    public async Task<IActionResult> Start(Guid id)
+    {
+        var result = await _mediator.Send(new StartTaskCommand(id));
+        if (!result) return NotFound();
+        return NoContent();
+    }
+
     [HttpPatch("{id}/complete")]
     public async Task<IActionResult> Complete(Guid id)
     {

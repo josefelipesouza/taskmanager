@@ -31,6 +31,11 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
     onUpdate();
   };
 
+  const handleStart = async () => {
+    await taskService.start(task.id);
+    onUpdate();
+  };
+
   return (
     <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
       <div className="flex justify-between items-start mb-2">
@@ -44,7 +49,23 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
         Vencimento: {new Date(task.dueDate).toLocaleDateString('pt-BR')}
       </p>
       <div className="flex gap-2">
-        {task.status === 'Pending' || task.status === 'InProgress' ? (
+        {task.status === 'Pending' && (
+          <>
+            <button
+              onClick={handleStart}
+              className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded"
+            >
+              ▶️ Iniciar
+            </button>
+            <button
+              onClick={handleCancel}
+              className="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
+            >
+              ❌ Cancelar
+            </button>
+          </>
+        )}
+        {task.status === 'InProgress' && (
           <>
             <button
               onClick={handleComplete}
@@ -59,7 +80,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
               ❌ Cancelar
             </button>
           </>
-        ) : null}
+        )}
       </div>
     </div>
   );
