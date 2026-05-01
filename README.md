@@ -35,78 +35,46 @@ API REST para gerenciamento de tarefas, desenvolvida em ASP.NET Core, utilizando
 ```
 taskmanager/
 │
-├── TaskManager.API/                  # Camada de apresentação
-│   ├── Controllers/                  # Endpoints HTTP
+├── TaskManager.API/                # Camada de Apresentação (Injeção de Dependência e Endpoints)
+│   ├── Controllers/                # Controllers da API
 │   │   └── TasksController.cs
-│   ├── Program.cs                    # Configuração da aplicação
-│   ├── appsettings.json              # Configurações
-│   └── Dockerfile                    # Container da API
+│   ├── Program.cs                  # Configuração de serviços e Middleware
+│   ├── appsettings.json            # Configurações de conexão e variáveis
+│   └── Dockerfile
 │
-├── TaskManager.Application/          # Casos de uso / Regras de aplicação
-│   ├── Commands/                     # Comandos (escrita)
-│   │   ├── CreateTaskCommand.cs
-│   │   ├── CompleteTaskCommand.cs
-│   │   └── CancelTaskCommand.cs
-│   ├── Queries/                      # Consultas (leitura)
-│   │   ├── GetAllTasksQuery.cs
-│   │   └── GetTaskByIdQuery.cs
-│   ├── Handlers/                     # Handlers MediatR (CQRS)
-│   │   ├── CreateTaskHandler.cs
-│   │   ├── CompleteTaskHandler.cs
-│   │   ├── CancelTaskHandler.cs
-│   │   ├── GetAllTasksHandler.cs
-│   │   └── GetTaskByIdHandler.cs
-│   ├── Validators/                   # Validações FluentValidation
-│   │   └── CreateTaskValidator.cs
-│   ├── Interfaces/                   # Contratos
-│   │   └── IMessageService.cs
-│   └── DTOs/                         # Objetos de transferência
-│       └── TaskItemDto.cs
+├── TaskManager.Application/        # Regras de Negócio e Casos de Uso
+│   ├── Commands/                   # Mutation: Comandos de escrita
+│   ├── Queries/                    # Mutation: Comandos de leitura
+│   ├── Handlers/                   # Orquestração (MediatR)
+│   │   └── CreateTaskHandler.cs
+│   ├── Interfaces/                 # Contratos de serviços da aplicação
+│   │   ├── IMessageService.cs
+│   │   └── IEmailService.cs        # <--- NOVO: Contrato para envio de e-mails
+│   ├── Validators/                 # FluentValidation
+│   └── DTOs/                       # Objetos de transferência de dados
 │
-├── TaskManager.Domain/               # Domínio puro
-│   ├── Entities/
-│   │   └── TaskItem.cs               # Entidade principal
-│   ├── Enums/
-│   │   └── TaskItemStatus.cs         # Status da tarefa
-│   └── Interfaces/
-│       └── ITaskRepository.cs        # Contrato do repositório
+├── TaskManager.Domain/             # Núcleo do Sistema (Enterprise Rules)
+│   ├── Entities/                   # Entidades (ex: TaskItem.cs)
+│   ├── Enums/                      # Tipos enumerados
+│   └── Interfaces/                 # Contratos de Repositórios
 │
-├── TaskManager.Infrastructure/       # Infraestrutura
-│   ├── Persistence/
-│   │   └── AppDbContext.cs           # Contexto do EF Core
-│   ├── Repositories/
-│   │   └── TaskRepository.cs         # Implementação do repositório
-│   ├── Messaging/
-│   │   └── RabbitMqService.cs        # Serviço RabbitMQ
-│   └── Migrations/                   # Migrations do EF Core
+├── TaskManager.Infrastructure/     # Implementações de I/O e Ferramentas Externas
+│   ├── Persistence/                # Entity Framework Core (AppDbContext)
+│   ├── Repositories/               # Implementação do ITaskRepository
+│   ├── Messaging/                  # <--- ATUALIZADO: Mensageria e Background Services
+│   │   ├── RabbitMqService.cs      # Produtor de mensagens
+│   │   ├── RabbitMqConsumer.cs     # <--- NOVO: Worker que consome a fila
+│   │   └── EmailService.cs         # <--- NOVO: Implementação real de envio de e-mail
+│   └── Migrations/                 # Histórico de banco de dados
 │
-├── TaskManager.Authentication/       # Estrutura para autenticação futura (JWT)
+├── TaskManager.Authentication/     # Módulo de Identity / JWT
 │
-├── TaskManager.Tests/                # Testes automatizados
-│   ├── Domain/
-│   │   └── TaskItemTests.cs          # Testes da entidade
-│   ├── Application/
-│   │   └── CreateTaskHandlerTests.cs # Testes dos handlers
-│   └── Validators/
-│       └── CreateTaskValidatorTests.cs
+├── TaskManager.Tests/              # Testes Unitários e de Integração
 │
-├── taskmanager-frontend/             # Frontend React
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── TaskCard.tsx          # Card de tarefa
-│   │   │   └── TaskForm.tsx          # Formulário de criação
-│   │   ├── services/
-│   │   │   └── taskService.ts        # Comunicação com a API
-│   │   ├── types/
-│   │   │   └── Task.ts               # Tipos TypeScript
-│   │   └── App.tsx                   # Componente principal
-│   └── Dockerfile                    # Container do frontend
+├── taskmanager-frontend/           # SPA em React (TypeScript)
 │
-├── .github/
-│   └── workflows/
-│       └── ci.yml                    # Pipeline GitHub Actions
-│
-└── docker-compose.yml                # Orquestração dos serviços
+├── .github/                        # CI/CD Workflows
+└── docker-compose.yml              # Orquestração (API, DB, RabbitMQ, Redis)
 ```
 
 ---
