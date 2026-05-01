@@ -49,7 +49,7 @@ taskmanager/
 │   │   └── CreateTaskHandler.cs
 │   ├── Interfaces/                 # Contratos de serviços da aplicação
 │   │   ├── IMessageService.cs
-│   │   └── IEmailService.cs        # <--- NOVO: Contrato para envio de e-mails
+│   │   └── IEmailService.cs        # Contrato para envio de e-mails
 │   ├── Validators/                 # FluentValidation
 │   └── DTOs/                       # Objetos de transferência de dados
 │
@@ -61,10 +61,10 @@ taskmanager/
 ├── TaskManager.Infrastructure/     # Implementações de I/O e Ferramentas Externas
 │   ├── Persistence/                # Entity Framework Core (AppDbContext)
 │   ├── Repositories/               # Implementação do ITaskRepository
-│   ├── Messaging/                  # <--- ATUALIZADO: Mensageria e Background Services
+│   ├── Messaging/                  # Mensageria e Background Services
 │   │   ├── RabbitMqService.cs      # Produtor de mensagens
-│   │   ├── RabbitMqConsumer.cs     # <--- NOVO: Worker que consome a fila
-│   │   └── EmailService.cs         # <--- NOVO: Implementação real de envio de e-mail
+│   │   ├── RabbitMqConsumer.cs     # Worker que consome a fila
+│   │   └── EmailService.cs         # Implementação real de envio de e-mail
 │   └── Migrations/                 # Histórico de banco de dados
 │
 ├── TaskManager.Authentication/     # Módulo de Identity / JWT
