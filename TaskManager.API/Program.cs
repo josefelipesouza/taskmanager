@@ -1,10 +1,11 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using TaskManager.Application.Commands;
+using TaskManager.Application.Interfaces;
 using TaskManager.Application.Validators;
 using TaskManager.Domain.Interfaces;
-using TaskManager.Application.Interfaces;
 using TaskManager.Infrastructure.Messaging;
 using TaskManager.Infrastructure.Persistence;
 using TaskManager.Infrastructure.Repositories;
@@ -33,9 +34,26 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Repositório
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
-// RabbitMQ
+// RabbitMQ Producer
 builder.Services.AddSingleton<IMessageService>(sp =>
     new RabbitMqService(builder.Configuration["RabbitMQ:Host"] ?? "localhost"));
+
+// Email Service
+builder.Services.AddScoped<IEmailService>(sp => new EmailService(
+    builder.Configuration["Email:Host"] ?? "smtp.gmail.com",
+    int.Parse(builder.Configuration["Email:Port"] ?? "587"),
+    builder.Configuration["Email:Username"] ?? "",
+    builder.Configuration["Email:Password"] ?? "",
+    builder.Configuration["Email:From"] ?? ""
+));
+
+// RabbitMQ Consumer (Background Service)
+builder.Services.AddSingleton<IHostedService>(sp => new RabbitMqConsumer(
+    sp,
+    sp.GetRequiredService<ILogger<RabbitMqConsumer>>(),
+    builder.Configuration["RabbitMQ:Host"] ?? "localhost",
+    builder.Configuration["Email:To"] ?? ""
+));
 
 // CORS
 builder.Services.AddCors(options =>
@@ -50,7 +68,7 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
-});   
+});
 
 var app = builder.Build();
 

@@ -27,12 +27,17 @@ public class RabbitMqService : IMessageService, IDisposable
 
     public async Task PublishAsync<T>(string eventName, T message)
     {
+        var options = new JsonSerializerOptions
+        {
+            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+        };
+
         var payload = JsonSerializer.Serialize(new
         {
             Event = eventName,
             Data = message,
             Timestamp = DateTime.UtcNow
-        });
+        }, options);
 
         var body = Encoding.UTF8.GetBytes(payload);
 

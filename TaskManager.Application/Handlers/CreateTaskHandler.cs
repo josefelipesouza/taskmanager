@@ -27,6 +27,7 @@ public class CreateTaskHandler : IRequestHandler<CreateTaskCommand, TaskItemDto>
         {
             task.Id,
             task.Title,
+            task.Description,
             task.Status,
             task.CreatedAt
         });
